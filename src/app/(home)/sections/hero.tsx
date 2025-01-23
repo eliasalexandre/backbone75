@@ -4,6 +4,7 @@ import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 
 import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
 
 export function HeroSection() {
   const [currentWord, setCurrentWord] = useState("app");
@@ -25,7 +26,7 @@ export function HeroSection() {
   return (
     <section className="min-h-screen">
       <div className="text-black space-y-14 text-left z-10">
-        <span>Backbone</span>
+        <Badge className="uppercase">Backbone</Badge>
 
         <h1 className="text-8xl md:text-9xl font-bold tracking-tighter">
           A solução
