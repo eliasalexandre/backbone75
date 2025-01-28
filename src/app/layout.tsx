@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import { Roboto } from "next/font/google";
 
+import { ContactDrawerProvider } from "@/context/contact-drawer-context";
+
 import "./globals.css";
 
 // Font files can be colocated inside of `app`
@@ -18,7 +20,9 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="pt-BR">
-      <body className={`${roboto.className} antialiased`}>{children}</body>
+      <body className={`${roboto.className} antialiased`}>
+        <ContactDrawerProvider>{children}</ContactDrawerProvider>
+      </body>
     </html>
   );
 }

@@ -1,4 +1,5 @@
 import { ContactSection } from "./sections/contact";
+import { ConfirmationDrawer } from "./sections/contact-confirmation";
 import { HeroSection } from "./sections/hero";
 
 export default function Page() {
@@ -13,6 +14,8 @@ export default function Page() {
     >
       <HeroSection />
       <ContactSection />
+
+      <ConfirmationDrawer />
     </div>
   );
 }

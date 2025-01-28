@@ -9,7 +9,7 @@ import { Badge } from "@/components/ui/badge";
 export function HeroSection() {
   const [currentWord, setCurrentWord] = useState("app");
 
-  const words = useMemo(() => ["App", "Website", "Blog", "Sistema"], []);
+  const words = useMemo(() => ["Apps", "Website", "Blog", "Sistemas"], []);
 
   useEffect(() => {
     const interval = setInterval(() => {

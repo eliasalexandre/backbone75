@@ -2,10 +2,12 @@
 
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { ref, push } from "firebase/database";
 import { Controller, useForm } from "react-hook-form";
-import { ArrowRight, Mail, Phone, User } from "lucide-react";
+import { Calendar1, Loader2, Mail, Phone, User } from "lucide-react";
 import { toast } from "sonner";
 
+import { databaseGoogleApp } from "@/services/firebase";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/form/input";
 import { Label } from "@/components/ui/label";
@@ -17,8 +19,9 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { useContactConfirmationDrawer } from "@/context/contact-drawer-context";
 
-const categories = ["Blogger", "Website", "Land page", "Mobile App", "Outros"];
+const categories = ["Blog", "Website", "Land page", "Mobile App", "Outros"];
 
 const contactFormSchema = z.object({
   username: z
@@ -33,22 +36,31 @@ const contactFormSchema = z.object({
 export type ContactFormData = z.infer<typeof contactFormSchema>;
 
 export function ContactForm() {
+  const { handleOpen } = useContactConfirmationDrawer();
+
   const {
     register,
     handleSubmit,
     control,
     formState: { errors, isSubmitting },
+    setValue,
   } = useForm<ContactFormData>({
     resolver: zodResolver(contactFormSchema),
   });
 
-  async function onContact(data: ContactFormData) {
+  async function onContact(objects: ContactFormData) {
     try {
-      // await signIn(data);
-      console.log(data);
-      toast("Entre em contacto com o administrador do sistema.", {
-        dismissible: true,
-      });
+      const flowRef = ref(databaseGoogleApp, "customers");
+
+      await push(flowRef, { ...objects });
+
+      handleOpen(true);
+
+      setValue("username", "");
+      setValue("phone", "");
+      setValue("email", "");
+      setValue("category", "");
+      setValue("description", "");
 
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (e: any) {
@@ -57,6 +69,10 @@ export function ContactForm() {
           description: "tente novamente mais tarde.",
         });
       }
+
+      toast("Ops...", {
+        description: e?.message,
+      });
     }
   }
 
@@ -145,7 +161,7 @@ export function ContactForm() {
             <Input.Control
               placeholder="ex: 923 000 000"
               id="phone"
-              type="phone"
+              type="tel"
               className="placeholder:text-zinc-300"
               {...register("phone")}
             />
@@ -205,11 +221,15 @@ export function ContactForm() {
 
       <Button
         disabled={isSubmitting}
-        className="w-full h-14 bg-[#eb5757] hover:bg-[#eb5757]/90 text-white text-lg"
+        className="w-full h-14 bg-[#eb5757] hover:bg-[#eb5757]/90 text-white text-lg font-semibold uppercase"
         size="lg"
       >
-        Enviar
-        <ArrowRight />
+        <span>Agendar Sessão</span>
+        {isSubmitting ? (
+          <Loader2 className="size-7 animate-spin" />
+        ) : (
+          <Calendar1 className="size-7" />
+        )}
       </Button>
     </form>
   );
